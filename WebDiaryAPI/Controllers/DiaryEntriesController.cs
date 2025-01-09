@@ -22,7 +22,7 @@ namespace WebDiaryAPI.Controllers
             return await _context.DiaryEntries.ToListAsync();
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<DiaryEntry>> GetDiaryEntry(int id)
         {
             var diaryEntry = await _context.DiaryEntries.FindAsync(id);
@@ -32,6 +32,17 @@ namespace WebDiaryAPI.Controllers
             }
 
             return diaryEntry;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<DiaryEntry>> CreateDiaryEntry(DiaryEntry diaryEntry)
+        {
+            diaryEntry.Id = 0;
+            _context.DiaryEntries.Add(diaryEntry);
+            await _context.SaveChangesAsync();
+            var resourceUrl = Url.Action(nameof(GetDiaryEntry), new {id=diaryEntry.Id});
+
+            return Created(resourceUrl, diaryEntry);
         }
     }
 }
