@@ -69,6 +69,21 @@ namespace WebDiaryAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> RemoveDiaryEntry(int id)
+        {
+            var diaryEntry = await _context.DiaryEntries.FindAsync(id);
+            if (diaryEntry == null)
+            {
+                return NotFound();
+            }
+
+            _context.DiaryEntries.Remove(diaryEntry);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         private bool DiaryEntryExists(int id)
         {
             return _context.DiaryEntries.Any(e => e.Id == id);
